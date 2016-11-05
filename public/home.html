@@ -1,0 +1,87 @@
+
+  <div class="row feed">
+
+         
+           
+     <div class="col-md-4">
+        <div ng-hide = "currentUser">
+         <div class="container">
+            <div class="row" style="margin-top:20px">
+
+           
+             
+                    <div class="col-md-4" style="margin-top:120px">
+                    
+                    <img src="nitachat.png">
+                    
+                  </div>
+               
+            
+
+                    <div class="col-md-4">
+                        <form role="form">
+                        <fieldset>
+                            <h2>Please Sign In</h2>
+                            <hr class="colorgraph">
+                            <div class="form-group">
+                                <div class="well well-sm">
+                                   <input type="text" class="form-control" size="20" placeholder="username" ng-model="username">
+                                   </div>
+                            </div>
+                           <div class="form-group">
+                                   <div class="well well-sm">
+                                   <input type="Password" class="form-control" size="20" placeholder="Password" ng-model="password">
+                                   </div>
+                           </div>
+                           <span class="button-checkbox">
+                                     <input type="checkbox" name="remember_me" id="remember_me" checked="checked" class="hidden">
+                           <a href="#/forgot" class="btn btn-link pull-right">Forgot Password?</a>
+                           </span>
+                           <hr class="colorgraph">
+                             <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <button class="btn btn-lg btn-success btn-block" type="button" ng-click="signin()">Sign In</button>
+                                </div>
+                             <div class="col-xs-6 col-sm-6 col-md-6">
+                                  <a href="#/signup" class="btn btn-lg btn-primary btn-block">Register</a>
+                                  </div>
+                         </div>
+                    </fieldset>
+                   </form>
+               </div>
+           </div>
+          </div>
+      </div>
+</div>
+
+                  
+                  <div ng-show="currentUser">
+                 <h4> Hello, {{ currentUser }}</h4>
+                  <br><br>
+                 <button class="btn btn-primary" type="button" <a href ng-click="logout()">Logout</a> 
+                  </div>
+           
+          
+
+<div>
+
+          <div class="col-md-4">
+          <div ng-show="currentUser">
+          <dir class="new-myvar">
+                    <input type="text" class="form-control" ng-model="newmyvar" placeholder="What do you have to write"><br>
+                    <button class="btn btn-primary" type="button" ng-click="submitNewMyvar()">Send</button>
+          </dir>
+ 
+          <h3 ng-repeat="myvar in myvar">
+ 
+         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+             
+              {{ myvar.text }}
+              <a href ng-click="removemyvar(myvar)"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                    <br>
+                    <small>{{ myvar.username }}</small> 
+          </h3>
+          </div>
+          </div>
+       </div>
+    </div>

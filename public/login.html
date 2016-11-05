@@ -1,0 +1,163 @@
+<!DOCTYPE>
+<html ng-app="mittens">
+<head>
+<title>NITA Chat</title>
+     
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
+         <link rel="stylesheet" type="text/css" href="style.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
+         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-route.js"></script>
+         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-cookies.js"></script>
+        <script type="text/javascript">
+
+                var app = angular.module('mittens',['ngRoute','ngCookies']); 
+
+                app.config(function ($routeProvider) {
+                  $routeProvider
+                       .when('/',{
+                         templateUrl: 'home.html',
+                         controller: 'HomeController',
+                       })
+                       .when('/signup',{
+                         templateUrl: 'signup.html',
+                         controller: 'SignupController',
+                       })
+                       .when('/forgot',{
+                       	templateUrl: 'forgot.html',
+                       	controller: 'ForgotController'
+                       });
+                 });
+
+         app.run(function($rootScope, $cookieStore){
+          if($cookieStore.get('token') && $cookieStore.get('currentUser')){
+               $rootScope.token = $cookieStore.get('token');
+               $rootScope.currentUser = $cookieStore.get('currentUser');
+
+          }
+         });
+       
+        app.controller('HomeController',function($rootScope,$scope,$http,$cookieStore){
+            
+            $scope.submitNewMyvar=function(){
+                 $http.post('/myvar',
+                  {newmyvar: $scope.newmyvar},
+                  {headers:  {
+                    'authorization': $rootScope.token 
+                    }}).then(function(){
+                     getmyvar();
+                       $scope.newmyvar = '';
+             });
+          };
+
+
+
+         $scope.removemyvar = function (myvar) {
+            $http.put('/myvar/remove',
+                {myvar: myvar},
+                {headers:  {
+                    'authorization': $rootScope.token 
+                    }}).then(function(){
+                  getmyvar();
+            });
+          };
+    
+         $scope.signin = function(){
+          $http.put('/user/signin',{username: $scope.username,password: $scope.password}).then(function(res){
+             $cookieStore.put('token',res.data.token);
+             $cookieStore.put('currentUser',$scope.username);
+             $rootScope.token = res.data.token;
+             $rootScope.currentUser = $scope.username;
+          },function(err){
+            alert('Sorry !! Try Again')
+    
+          });
+         }
+    
+
+        $scope.logout = function(){
+           $cookieStore.remove('token');
+           $cookieStore.remove('currentUser');
+           $rootScope.token = null;
+           $rootScope.currentUser = null;
+    
+        };
+
+         function getmyvar() {
+             $http.get('/myvar').then(function(response){
+               $scope.myvar = response.data;
+               });
+            }    
+           getmyvar();
+       });
+
+  
+
+      app.controller('SignupController',function($scope,$http){
+          
+         $scope.submitSignup = function(){
+            var newUser = {
+               username: $scope.username,
+              password: $scope.password
+            };
+              $http.post('/user',newUser).then(function(){
+                  alert('success');
+
+                /*  var refresh = function(){
+     $http.get('/user').success(function(response)
+   {
+    console.log("i got the data I requested");
+    $scope.user = response.data;
+    $scope.username = "",
+    $scope.password = "";
+   });
+};*/
+              
+            });
+         }
+
+         });
+
+      app.controller('ForgotController',function($scope,$http){
+      	$scope.submit = function(){
+      		var oldUser = {
+      			username: $scope.username
+      		 };
+      		 $http.post('/user',oldUser).then(function(){
+      		 	alert('varification code has been sent to your email');
+
+      		 });
+      	}
+
+      });
+
+</script>
+</head>
+
+
+
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="index.html">NITA CHAT</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="index.html">Home</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+    
+
+         
+            <div ng-view></div>
+   
+        
+
+</body>
+</html>
